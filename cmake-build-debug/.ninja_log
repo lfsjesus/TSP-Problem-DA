@@ -1,7 +1,0 @@
-# ninja log v5
-0	238	1685373251939853589	CMakeFiles/DA_OceanUrbanShipping.dir/src/graph/Graph.cpp.o	6acc72027f22e795
-1	134	1685373251835854371	CMakeFiles/DA_OceanUrbanShipping.dir/src/graph/VertexEdge.cpp.o	4209374dc2cad86d
-0	246	1685377830979513659	CMakeFiles/DA_OceanUrbanShipping.dir/src/DatasetLoader.cpp.o	c08b21edbd423bd5
-1	282	1685378121385366339	CMakeFiles/DA_OceanUrbanShipping.dir/src/main.cpp.o	e98651658c320e86
-0	299	1685378121405366191	CMakeFiles/DA_OceanUrbanShipping.dir/src/Menu.cpp.o	59e20c853b70f3a3
-299	349	1685378121453365839	DA_OceanUrbanShipping	b9f317b262a9cff7

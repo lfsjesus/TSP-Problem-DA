@@ -1,3 +1,0 @@
-/home/luis/Desktop/DA-OceanUrbanShipping/cmake-build-debug/CMakeFiles/DA_OceanUrbanShipping.dir
-/home/luis/Desktop/DA-OceanUrbanShipping/cmake-build-debug/CMakeFiles/edit_cache.dir
-/home/luis/Desktop/DA-OceanUrbanShipping/cmake-build-debug/CMakeFiles/rebuild_cache.dir
