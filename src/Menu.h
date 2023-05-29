@@ -11,6 +11,17 @@
 class Menu {
 public:
 
+    int auxMenu(int maxOption, int minOption);
+
+    void clearScreen();
+
+    int mainMenu();
+
+    int aboutUsMenu();
+
+    void menuController();
+
+
 };
 
 #endif //UNTITLED_MENU_H
