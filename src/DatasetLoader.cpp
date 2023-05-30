@@ -49,7 +49,10 @@ Graph* loadSampleGraph(const std::string& filePath) {
             }
         }
 
-        graph->addBidirectionalEdge(stoi(origin), stoi(origin), stod(distance));
+        int originId = stoi(origin);
+        int destId = stoi(destination);
+        double dist = stod(distance);
+        graph->addBidirectionalEdge(originId, destId, dist);
     }
     return graph;
 }
@@ -100,7 +103,11 @@ Graph *loadRealWorldGraph(const std::string& nodesFilePath, const std::string& e
         std::getline(iss, destination, ',');
         std::getline(iss, distance, ',');
 
-        graph->addBidirectionalEdge(stoi(origin), stoi(destination), stod(distance));
+        int originId = stoi(origin);
+        int destId = stoi(destination);
+        double dist = stod(distance);
+
+        graph->addBidirectionalEdge(originId, destId, dist);
     }
 
     return graph;

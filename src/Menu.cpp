@@ -1,7 +1,6 @@
 #include "Menu.h"
 #include <cstdlib>
 
-Graph *graph;
 bool stayInMenu;
 
 int Menu::auxMenu(int maxOption, int minOption) {
@@ -37,6 +36,20 @@ int Menu::mainMenu() {
               << "\t0. Quit" << std::endl;
     std::cout << "----------------------------------------------------------------" << std::endl;
     std::cout << "Choose an option: ";
+
+    Graph *graph = loadSampleGraph("../dataset/Toy-Graphs/shipping.csv");
+    std::vector<int> path = {0};
+    std::vector<int> bestPath;
+    std::vector<bool> visited(graph->getNumVertex(), false);
+    double minCost = std::numeric_limits<double>::max();
+    graph->resetVisited();
+    Vertex *source = graph->findVertex(0);
+    source->setVisited(true);
+    graph->tsp_backtracking(path, bestPath, minCost, 0.0);
+    std::cout << "Minimum cost: " << minCost << std::endl;
+    for (auto v: bestPath) {
+        std::cout << v << " ";
+    }
     return auxMenu(5, 0);
 }
 

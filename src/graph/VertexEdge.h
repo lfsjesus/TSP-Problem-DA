@@ -87,7 +87,7 @@ public:
 
     Vertex *getDest() const;
 
-    int getWeight() const;
+    double getWeight() const;
 
     void setReverse(Edge *_reverse);
 };
