@@ -4,15 +4,19 @@
 #include <string>
 #include "graph/Graph.h"
 
-#define DEFAULT_NETWORK_PATH "../dataset/network.csv"
-#define DEFAULT_STATIONS_PATH "../dataset/stations.csv"
+/**
+ * @brief Loads a sample graph (Toy Graph or Extra Fully Connected Graph) from a file
+ * @param filePath Path to file
+ * @return Pointer to graph or nullptr if file not found
+ */
+Graph *loadSampleGraph(const std::string& filePath);
 
 /**
- * @brief Loads the desired network.csv and stations.csv into Graph.
- * @param networkPath desired network csv file
- * @param stationsPath desired station csv file
- * @return Graph* if successful otherwise returns nullptr.
+ * @brief Loads a real world graph (larger files) from a file
+ * @param edgesFilePath Path to file containing edges
+ * @param nodesFilePath Path to file containing nodes
+ * @return Pointer to graph or nullptr if file(s) not found
  */
-Graph *loadDataset(std::string networkPath, std::string stationsPath);
+Graph *loadRealWorldGraph(const std::string& nodesFilePath, const std::string& edgesFilePath);
 
 #endif

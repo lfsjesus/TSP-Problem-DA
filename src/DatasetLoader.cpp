@@ -3,56 +3,105 @@
 #include <fstream>
 #include <sstream>
 
-Graph *loadDataset(std::string networkPath, std::string stationsPath) {
-    std::ifstream networkFile(networkPath);
-    std::ifstream stationFile(stationsPath);
+Graph* loadSampleGraph(const std::string& filePath) {
+    std::ifstream file(filePath);
 
-    if (!networkFile.good()) {
-        std::cout << "Couldn't load network file " << networkPath << "\n";
+    if (!file.good()) {
+        std::cout << "Error: File not found." << std::endl;
         return nullptr;
     }
 
-    if (!stationFile.good()) {
-        std::cout << "Couldn't load stations file " << stationsPath << "\n";
+    auto *graph = new Graph();
+
+    std::string line;
+    std::getline(file, line);
+
+    while (std::getline(file, line).good()) {
+        if (line.back() == '\r') line.pop_back();
+        std::stringstream iss(line);
+
+        std::string origin;
+        std::string destination;
+        std::string distance;
+        std::string labelOrigin;
+        std::string labelDest;
+        bool hasLabels = false;
+
+        std::getline(iss, origin, ',');
+        std::getline(iss, destination, ',');
+        std::getline(iss, distance, ',');
+        if (std::getline(iss, labelOrigin, ',')) {
+            std::getline(iss, labelDest, ',');
+            hasLabels = true;
+        }
+
+        if (graph->findVertex(stoi(origin)) == nullptr) {
+            graph->addVertex(stoi(origin));
+            if (hasLabels) {
+                graph->findVertex(stoi(origin))->setLabel(labelOrigin);
+            }
+        }
+
+        if (graph->findVertex(stoi(destination)) == nullptr) {
+            graph->addVertex(stoi(destination));
+            if (hasLabels) {
+                graph->findVertex(stoi(destination))->setLabel(labelDest);
+            }
+        }
+
+        graph->addBidirectionalEdge(stoi(origin), stoi(origin), stod(distance));
+    }
+    return graph;
+}
+
+
+Graph *loadRealWorldGraph(const std::string& nodesFilePath, const std::string& edgesFilePath) {
+    std::ifstream nodesFile(nodesFilePath);
+    std::ifstream edgesFile(edgesFilePath);
+
+    if (!nodesFile.good() || !edgesFile.good()) {
+        std::cout << "Error: File not found." << std::endl;
         return nullptr;
     }
 
-    Graph *graph = new Graph();
+    auto *graph = new Graph();
 
-    std::string stationLine;
-    std::getline(stationFile, stationLine);
+    std::string line;
+    std::getline(nodesFile, line);
 
-    while (std::getline(stationFile, stationLine).good()) {
-        std::istringstream stationLineStream(stationLine);
-        std::string name;
-        std::getline(stationLineStream, name, ',');
-        std::string district;
-        std::getline(stationLineStream, district, ',');
-        std::string municipality;
-        std::getline(stationLineStream, municipality, ',');
-        std::string township;
-        std::getline(stationLineStream, township, ',');
-        std::string line;
-        std::getline(stationLineStream, line, '\r');
+    while (std::getline(nodesFile, line).good()) {
+        if (line.back() == '\r') line.pop_back();
+        std::stringstream iss(line);
 
+        std::string id;
+        std::string lon;
+        std::string lat;
 
+        std::getline(iss, id, ',');
+        std::getline(iss, lon, ',');
+        std::getline(iss, lat, ',');
+
+        graph->addVertex(stoi(id));
+        graph->findVertex(stoi(id))->setLon(stod(lon));
+        graph->findVertex(stoi(id))->setLat(stod(lat));
     }
 
-    std::string networkLine;
-    std::getline(networkFile, networkLine);
+    std::getline(edgesFile, line);
 
-    while (std::getline(networkFile, networkLine).good()) {
-        std::istringstream networkLineStream(networkLine);
-        std::string stationA;
-        std::getline(networkLineStream, stationA, ',');
-        std::string stationB;
-        std::getline(networkLineStream, stationB, ',');
-        std::string capacityStr;
-        std::getline(networkLineStream, capacityStr, ',');
-        int capacity = std::atoi(capacityStr.c_str());
-        std::string service;
-        std::getline(networkLineStream, service, '\r');
+    while (std::getline(edgesFile, line).good()) {
+        if (line.back() == '\r') line.pop_back();
+        std::stringstream iss(line);
 
+        std::string origin;
+        std::string destination;
+        std::string distance;
+
+        std::getline(iss, origin, ',');
+        std::getline(iss, destination, ',');
+        std::getline(iss, distance, ',');
+
+        graph->addBidirectionalEdge(stoi(origin), stoi(destination), stod(distance));
     }
+
     return graph;
 }

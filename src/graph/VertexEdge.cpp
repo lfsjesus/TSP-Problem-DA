@@ -86,5 +86,29 @@ void Vertex::setVisited(bool _visited) {
     this->visited = _visited;
 }
 
+void Vertex::setLabel(std::string _label) {
+    this->label = _label;
+}
+
+void Vertex::setLat(double _lat) {
+    this->lat = _lat;
+}
+
+void Vertex::setLon(double _lon) {
+    this->lon = _lon;
+}
+
+const std::string &Vertex::getLabel() const {
+    return label;
+}
+
+double Vertex::getLat() const {
+    return lat;
+}
+
+double Vertex::getLon() const {
+    return lon;
+}
+
 
 

@@ -2,13 +2,17 @@
 #define DA_RAILWAYMANAGEMENT_VERTEXEDGE_H
 
 #include <vector>
+#include <string>
 
 class Edge;
 
 class Vertex {
 private:
     int id;
+    std::string label;
+    double lat, lon = 0;
     std::vector<Edge *> edges;
+
     bool visited = false;
     bool processing = false;
     unsigned int inDegree;
@@ -36,6 +40,18 @@ public:
     void setPath(Edge *_path);
 
     void setDistance(int _distance);
+
+    void setLabel(std::string _label);
+
+    void setLat(double _lat);
+
+    void setLon(double _lon);
+
+    const std::string &getLabel() const;
+
+    double getLat() const;
+
+    double getLon() const;
 
     /**
      * Adds a new outgoing edge to the vertex/station

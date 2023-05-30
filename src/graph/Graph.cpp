@@ -3,11 +3,14 @@
 #include <cmath>
 #include "Graph.h"
 
-Vertex *Graph::findVertex(const int id) const {
-    return vertexSet.find(id)->second;
+Vertex* Graph::findVertex(int id) const {
+    auto it = vertexSet.find(id);
+    if (it == vertexSet.end())
+        return nullptr;
+    return it->second;
 }
 
-bool Graph::addVertex(const int id) {
+bool Graph::addVertex(int id) {
     auto it = vertexSet.find(id);
     if (it != vertexSet.end())
         return false;
@@ -25,7 +28,7 @@ bool Graph::addEdge(int origin, int dest, int weight) {
     return true;
 }
 
-bool Graph::addBidirectionalEdge(int origin, int dest, int weight) {
+bool Graph::addBidirectionalEdge(int origin, int dest, double weight) {
     Vertex *v1 = findVertex(origin);
     Vertex *v2 = findVertex(dest);
     if (v1 == nullptr || v2 == nullptr)

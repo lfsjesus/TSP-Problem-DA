@@ -17,7 +17,7 @@ public:
      * @param station Station name
      * @return Pointer to vertex or nullptr if not found
      */
-    Vertex *findVertex(const int id) const;
+    Vertex *findVertex(int id) const;
 
     /**
      * @brief Finds a vertex with a given station name
@@ -25,7 +25,7 @@ public:
      * @param station Station name
      * @return Pointer to vertex or nullptr if not found
      */
-    bool addVertex(const int id);
+    bool addVertex(int id);
 
     /**
      * @brief Adds an edge to the graph
@@ -48,7 +48,7 @@ public:
      * @return true if edge was added, false if it already exists
      */
     bool
-    addBidirectionalEdge(int origin, int dest, int weight);
+    addBidirectionalEdge(int origin, int dest, double weight);
 
     /**
      * @brief Gets the number of vertices in the graph
