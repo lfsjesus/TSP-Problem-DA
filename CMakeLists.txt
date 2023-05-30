@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.23.2)
+cmake_minimum_required(VERSION 3.25)
 project(DA_OceanUrbanShipping)
 
 set(CMAKE_CXX_STANDARD 14)
@@ -15,4 +15,6 @@ add_executable(DA_OceanUrbanShipping
         src/DatasetLoader.h
         src/main.cpp
         src/Menu.cpp
-        src/Menu.h)
+        src/Menu.h
+        src/Utils.cpp
+        src/Utils.h)

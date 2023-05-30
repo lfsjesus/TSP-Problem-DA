@@ -74,7 +74,7 @@ Vertex *Edge::getDest() const {
     return dest;
 }
 
-int Edge::getWeight() const {
+double Edge::getWeight() const {
     return weight;
 }
 

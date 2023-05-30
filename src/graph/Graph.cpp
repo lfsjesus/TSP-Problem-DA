@@ -1,6 +1,7 @@
 #include <unordered_map>
 #include <algorithm>
 #include <cmath>
+#include <iostream>
 #include "Graph.h"
 
 Vertex* Graph::findVertex(int id) const {
@@ -61,5 +62,37 @@ void Graph::DFS(Vertex *source) {
 void Graph::resetVisited() {
     for (auto v: vertexSet) {
         v.second->setVisited(false);
+    }
+}
+
+void Graph::tsp_backtracking(std::vector<int> &path, std::vector<int> &bestPath, double &minCost, double cumulatedCost) {
+    int first = path.front();
+    int last = path.back();
+
+    if (path.size() == vertexSet.size()) {
+        for (Edge* e : findVertex(last)->getEdges()) {
+            Vertex* v = e->getDest();
+            if (v->getId() == first) {
+                double cycleCost = cumulatedCost + e->getWeight();
+                if (cycleCost < minCost) {
+                    minCost = cycleCost;
+                    bestPath = path;
+                }
+                break;
+            }
+        }
+        return;
+    }
+
+    for (Edge* e : findVertex(last)->getEdges()) {
+        Vertex* v = e->getDest();
+        if (!v->isVisited()) {
+            double new_cost = cumulatedCost + e->getWeight();
+            path.push_back(v->getId());
+            v->setVisited(true);
+            tsp_backtracking(path, bestPath, minCost, new_cost);
+            path.pop_back();
+            v->setVisited(false);
+        }
     }
 }

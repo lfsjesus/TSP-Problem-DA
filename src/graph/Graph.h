@@ -77,7 +77,16 @@ public:
      */
     void resetVisited();
 
-};
+    /**
+     * @brief Solves Travelling Salesman Problem related problems using backtracking
+     * Time Complexity: O(n!) being n the number of vertices in the graph
+     * @param path vector with the node to start and end the tour
+     * @param bestPath initially empty vector that will eventually be filled with the best path
+     * @param minCost initially infinity, will eventually be filled with the minimum cost
+     * @param cumulatedCost initially 0 and will keep track of the cost so far
+     */
+    void tsp_backtracking(std::vector<int> &path, std::vector<int> &bestPath, double &minCost, double cumulatedCost); // passar path com vertice de inicio (0), marca-lo como visitado antes de chamar a função, cumulatedCost = 0
 
+};
 
 #endif //DA_RAILWAYMANAGEMENT_GRAPH_H

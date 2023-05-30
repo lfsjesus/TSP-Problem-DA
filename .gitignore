@@ -2,4 +2,5 @@ build/
 cmake-build-debug/*
 .idea/
 *.csv
+*.DS_Store
 .vscode/
