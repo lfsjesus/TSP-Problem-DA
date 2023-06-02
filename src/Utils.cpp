@@ -7,24 +7,16 @@ double toRadians(const double& angle) {
 }
 
 double haversineDistance(Vertex* v1, Vertex* v2) {
-    double EARTH_RADIUS = 6371.0;
+    double EARTH_RADIUS = 6371.0 * 1000.0;
 
-    double lat1 = v1->getLat();
-    double lon1 = v1->getLon();
+    double dLat = toRadians(v2->getLat() - v1->getLat());
+    double dLon = toRadians(v2->getLon() - v1->getLon());
 
-    double lat2 = v2->getLat();
-    double lon2 = v2->getLon();
+    double lat1 = toRadians(v1->getLat());
+    double lat2 = toRadians(v2->getLat());
 
-    double lat1Rad = toRadians(lat1);
-    double lon1Rad = toRadians(lon1);
-    double lat2Rad = toRadians(lat2);
-    double lon2Rad = toRadians(lon2);
+    double a = pow(sin(dLat / 2), 2) + pow(sin(dLon / 2), 2) * cos(lat1) * cos(lat2);
+    double c = 2 * asin(sqrt(a));
 
-    double dlat = lat2Rad - lat1Rad;
-    double dlon = lon2Rad - lon1Rad;
-    double a = pow(sin(dlat / 2), 2) + cos(lat1Rad) * cos(lat2Rad) * pow(sin(dlon / 2), 2);
-    double c = 2 * atan2(sqrt(a), sqrt(1 - a));
-    double distance = EARTH_RADIUS * c;
-
-    return distance;
+    return EARTH_RADIUS * c;
 }

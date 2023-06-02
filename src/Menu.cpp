@@ -37,10 +37,12 @@ int Menu::mainMenu() {
     std::cout << "----------------------------------------------------------------" << std::endl;
     std::cout << "Choose an option: ";
 
-    Graph *graph = loadSampleGraph("../dataset/Toy-Graphs/shipping.csv");
+    Graph *graph = loadRealWorldGraph("../dataset/Real-world Graphs/graph1/nodes.csv",
+                                      "../dataset/Real-world Graphs/graph1/edges.csv");
+
+    /*
     std::vector<int> path = {0};
     std::vector<int> bestPath;
-    std::vector<bool> visited(graph->getNumVertex(), false);
     double minCost = std::numeric_limits<double>::max();
     graph->resetVisited();
     Vertex *source = graph->findVertex(0);
@@ -50,6 +52,11 @@ int Menu::mainMenu() {
     for (auto v: bestPath) {
         std::cout << v << " ";
     }
+     */
+    std::cout << graph->getVertexSet().size() << std::endl;
+    double result = graph->triangularInequalityHeuristic();
+
+
     return auxMenu(5, 0);
 }
 

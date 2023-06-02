@@ -21,7 +21,11 @@ private:
     std::vector<Edge *> incoming;
 
 public:
+    int queueIndex = 0;
+
     explicit Vertex(const int &id);
+
+    bool operator<(Vertex & vertex) const;
 
     const int &getId() const;
 
@@ -29,7 +33,7 @@ public:
 
     bool isVisited() const;
 
-    int getDistance() const;
+    double getDistance() const;
 
     Edge *getPath() const;
 
@@ -39,7 +43,7 @@ public:
 
     void setPath(Edge *_path);
 
-    void setDistance(int _distance);
+    void setDistance(double _distance);
 
     void setLabel(std::string _label);
 
@@ -79,6 +83,7 @@ private:
     Vertex *dest;
     double weight;
     Edge *reverse = nullptr;
+    bool selected = false;
 
 public:
     Edge(Vertex *origin, Vertex *dest, double weight);
@@ -90,6 +95,12 @@ public:
     double getWeight() const;
 
     void setReverse(Edge *_reverse);
+
+    Edge *getReverse() const;
+
+    bool isSelected() const;
+
+    void setSelected(bool selected);
 };
 
 #endif //DA_RAILWAYMANAGEMENT_VERTEXEDGE_H

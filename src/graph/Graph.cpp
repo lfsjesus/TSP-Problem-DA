@@ -2,7 +2,10 @@
 #include <algorithm>
 #include <cmath>
 #include <iostream>
+#include <limits>
+#include <set>
 #include "Graph.h"
+#include "Utils.h"
 
 Vertex* Graph::findVertex(int id) const {
     auto it = vertexSet.find(id);
@@ -20,7 +23,7 @@ bool Graph::addVertex(int id) {
     return true;
 }
 
-bool Graph::addEdge(int origin, int dest, int weight) {
+bool Graph::addEdge(int origin, int dest, double weight) {
     Vertex *v1 = findVertex(origin);
     Vertex *v2 = findVertex(dest);
     if (v1 == nullptr || v2 == nullptr)
@@ -50,14 +53,18 @@ std::unordered_map<int, Vertex *> Graph::getVertexSet() const {
     return vertexSet;
 }
 
-void Graph::DFS(Vertex *source) {
+/*
+void Graph::DFS(Vertex *source, std::vector<Vertex*> &path) {
     source->setVisited(true);
+
     for (auto e: source->getEdges()) {
         if (!e->getDest()->isVisited()) {
-            DFS(e->getDest());
+            DFS(e->getDest(), path);
         }
     }
+    path.push_back(source);
 }
+ */
 
 void Graph::resetVisited() {
     for (auto v: vertexSet) {
@@ -96,3 +103,136 @@ void Graph::tsp_backtracking(std::vector<int> &path, std::vector<int> &bestPath,
         }
     }
 }
+
+void Graph::MSTPrim(std::vector<Edge*> &edges) {
+
+    for (auto v : vertexSet) {
+        v.second->setDistance(std::numeric_limits<double>::max());
+        v.second->setVisited(false);
+        v.second->setPath(nullptr);
+    }
+
+    Vertex* first = vertexSet.find(0)->second;
+    first->setDistance(0);
+
+    MutablePriorityQueue<Vertex> q;
+    q.insert(first);
+
+    while (!q.empty()) {
+        Vertex *v = q.extractMin();
+        v->setVisited(true);
+        for (Edge *e: v->getEdges()) {
+            Vertex *w = e->getDest();
+            if (!w->isVisited()) {
+                auto oldDist = w->getDistance();
+                if (e->getWeight() < oldDist) {
+                    w->setDistance(e->getWeight());
+                    w->setPath(e);
+                    if (oldDist == std::numeric_limits<double>::max()) {
+                        q.insert(w);
+                    } else {
+                        q.decreaseKey(w);
+                    }
+                }
+            }
+        }
+    }
+
+    for (auto v : vertexSet) {
+        if (v.second->getPath() != nullptr) {
+            edges.push_back(v.second->getPath());
+        }
+    }
+
+    // Sort edges by weight
+    std::sort(edges.begin(), edges.end(), [](Edge* e1, Edge* e2) {
+        return e1->getWeight() < e2->getWeight();
+    });
+}
+
+
+double Graph::triangularInequalityHeuristic() {
+    std::vector<Vertex*> path;
+    std::vector<Edge*> edges;
+    resetVisited();
+    MSTPrim(edges);
+
+    resetVisited();
+    Vertex* first = vertexSet.find(0)->second;
+    preOrderTraversal(edges, first, path);
+
+    double distance = computePathDistance(path);
+    return distance;
+}
+
+bool Graph::connectedNodes(int id1, int id2) const {
+    Vertex* v1 = findVertex(id1);
+    Vertex* v2 = findVertex(id2);
+    if (v1 == nullptr || v2 == nullptr) {
+        return false;
+    }
+
+    for (const Edge* e : v1->getEdges()) {
+        if (e->getDest()->getId() == v2->getId()) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+double Graph::computePathDistance(std::vector<Vertex *> &path) {
+    double distance = 0.0;
+
+    for (int i = 0; i < path.size() - 1; ++i) {
+        Vertex* v1 = path[i];
+        Vertex* v2 = path[i + 1];
+
+        if (!connectedNodes(v1->getId(), v2->getId())) {
+            distance += haversineDistance(v1, v2);
+            continue;
+        }
+
+        for (Edge* e : v1->getEdges()) {
+            if (e->getDest()->getId() == v2->getId()) {
+                distance += e->getWeight();
+                break;
+            }
+        }
+    }
+
+    int last = path.back()->getId();
+    int first = path.front()->getId();
+
+    if (!connectedNodes(last, first)) {
+        distance += haversineDistance(findVertex(last), findVertex(first));
+    }
+    else {
+        for (Edge* e : path.back()->getEdges()) {
+            if (e->getDest()->getId() == first) {
+                distance += e->getWeight();
+                break;
+            }
+        }
+    }
+
+    return distance;
+}
+
+void Graph::preOrderTraversal(const std::vector<Edge *>& mst, Vertex *v, std::vector<Vertex *> &path) {
+    v->setVisited(true);
+
+    std::cout << v->getId() << " ";
+    path.push_back(v);
+
+    for (Edge* e : mst) {
+        if (e->getOrigin()->getId() == v->getId() && !e->getDest()->isVisited()) {
+            preOrderTraversal(mst, e->getDest(), path);
+        }
+    }
+}
+
+
+
+
+

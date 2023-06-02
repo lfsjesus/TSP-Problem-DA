@@ -16,7 +16,7 @@ bool Vertex::isVisited() const {
     return visited;
 }
 
-int Vertex::getDistance() const { return distance; }
+double Vertex::getDistance() const { return distance; }
 
 Edge *Vertex::getPath() const {
     return path;
@@ -30,7 +30,7 @@ void Vertex::setPath(Edge *_path) {
     this->path = _path;
 }
 
-void Vertex::setDistance(int _distance) {
+void Vertex::setDistance(double _distance) {
     this->distance = _distance;
 }
 
@@ -80,6 +80,22 @@ double Edge::getWeight() const {
 
 void Edge::setReverse(Edge *_reverse) {
     this->reverse = _reverse;
+}
+
+Edge *Edge::getReverse() const {
+    return reverse;
+}
+
+bool Edge::isSelected() const {
+    return selected;
+}
+
+void Edge::setSelected(bool selected) {
+    this->selected = selected;
+}
+
+bool Vertex::operator<(Vertex & vertex) const {
+    return this->distance < vertex.getDistance();
 }
 
 void Vertex::setVisited(bool _visited) {
