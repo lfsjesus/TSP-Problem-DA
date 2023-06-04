@@ -12,6 +12,7 @@
 class Graph {
 private:
     std::unordered_map<int, Vertex *> vertexSet;
+    double ** matrixGraph;
 public:
     /**
      * @brief Finds a vertex with a given station name
@@ -123,6 +124,16 @@ public:
      * @param path the path to be filled
      */
     void preOrderTraversal(const std::vector<Edge*>& mst, Vertex* v, std::vector<Vertex*> &path);
+
+    double triangularInequalityHeuristic2Opt();
+
+    void twoOpt(std::vector<Vertex*>& path, double& distance);
+
+    double localSearch2Opt();
+
+    double simulatedAnnealing2Opt(double initialTemperature, int steps, double cooldownRate);
+
+    void initDistanceGraph();
 };
 
 #endif //DA_RAILWAYMANAGEMENT_GRAPH_H
