@@ -222,7 +222,7 @@ double Graph::computePathDistance(std::vector<Vertex *> &path) {
 void Graph::preOrderTraversal(const std::vector<Edge *>& mst, Vertex *v, std::vector<Vertex *> &path) {
     v->setVisited(true);
 
-    std::cout << v->getId() << " ";
+    //std::cout << v->getId() << " ";
     path.push_back(v);
 
     for (Edge* e : mst) {
@@ -232,7 +232,164 @@ void Graph::preOrderTraversal(const std::vector<Edge *>& mst, Vertex *v, std::ve
     }
 }
 
+double Graph::triangularInequalityHeuristic2Opt()
+{
+    std::vector<Vertex*> path;
+    std::vector<Edge*> edges;
+    resetVisited();
+    MSTPrim(edges);
+
+    resetVisited();
+    Vertex* first = vertexSet.find(0)->second;
+    preOrderTraversal(edges, first, path);
+
+    double distance = computePathDistance(path);
+    twoOpt(path, distance);
+
+    return distance;
+}
+
+void Graph::twoOpt(std::vector<Vertex *> &path, double &distance)
+{
+    bool foundImprovement = true;
+    while(foundImprovement){
+        foundImprovement = false;
+        for(int i = 0; i < vertexSet.size() - 2; i++){
+            for(int j = i+1; j < vertexSet.size() - 1; j++){
+
+                if(matrixGraph[path[i]->getId()][path[i+1]->getId()] == 0 
+                    || matrixGraph[path[j]->getId()][path[j+1]->getId()]==0
+                    || matrixGraph[path[i]->getId()][path[j]->getId()] == 0
+                    || matrixGraph[path[i+1]->getId()][path[j+1]->getId()] == 0){
+                        //this edge doesnt exist so we ignore it
+                    continue;
+
+                }
+                int lengthDelta = -matrixGraph[path[i]->getId()][path[i+1]->getId()] 
+                    -matrixGraph[path[j]->getId()][path[j+1]->getId()]
+                    +matrixGraph[path[i]->getId()][path[j]->getId()] 
+                    +matrixGraph[path[i+1]->getId()][path[j+1]->getId()];
+                if(lengthDelta < 0){
+                    foundImprovement = true;
+                    std::reverse(path.begin() + i + 1, path.begin()+j+1);
+                    distance += lengthDelta;
+                }
+
+            }
+        }
+    }
+}
+
+double Graph::localSearch2Opt()
+{
+    std::vector<Vertex*> path;
+    for(int i = 0; i < vertexSet.size(); i++){
+        path.push_back((*vertexSet.find(i)).second);
+    }   
+
+    double distance = computePathDistance(path);
+
+    twoOpt(path, distance);
+
+    return distance;
+
+}
 
 
+double Graph::simulatedAnnealing2Opt(double initialTemperature, int steps, double cooldownRate)
+{
+    //use 2-approximation as basis, since it's unnecessary to start from a random solution
+    std::vector<Vertex*> path;
+    std::vector<Edge*> edges;
+    resetVisited();
+    MSTPrim(edges);
 
 
+    resetVisited();
+    Vertex* first = vertexSet.find(0)->second;
+    preOrderTraversal(edges, first, path);
+    double distance = computePathDistance(path);
+    twoOpt(path, distance);
+
+    std::vector<Vertex*> globalBestPath = path;
+    double globalBestDistance = distance;
+
+    int totalSteps = 0;
+
+    //a step is a change in distance either a better one or a worse one
+    while (totalSteps < steps)
+    {
+        for(int i = 0; i < vertexSet.size() - 2; i++){
+            for(int j = i+1; j < vertexSet.size() - 1; j++){
+
+                if(matrixGraph[path[i]->getId()][path[i+1]->getId()] == 0 
+                    || matrixGraph[path[j]->getId()][path[j+1]->getId()]==0
+                    || matrixGraph[path[i]->getId()][path[j]->getId()] == 0
+                    || matrixGraph[path[i+1]->getId()][path[j+1]->getId()] == 0){
+                        //this edge doesnt exist so we ignore it
+                    continue;
+
+                }
+                int lengthDelta = -matrixGraph[path[i]->getId()][path[i+1]->getId()] 
+                    -matrixGraph[path[j]->getId()][path[j+1]->getId()]
+                    +matrixGraph[path[i]->getId()][path[j]->getId()] 
+                    +matrixGraph[path[i+1]->getId()][path[j+1]->getId()];
+                if(lengthDelta < 0){
+                    std::reverse(path.begin() + i + 1, path.begin()+j+1);
+                    distance += lengthDelta;
+                    //decrease current temperature
+                    if(distance < globalBestDistance){
+                        globalBestDistance = distance;
+                        globalBestPath = path;
+                        totalSteps = 0;
+                    }
+                    break;
+                } else {
+                    //make probability for worse path
+                    //if accepted, use worse path increment totalSteps and decrease current temperature
+                    if(lengthDelta == 0) continue;
+                    double random = ((double) rand() / RAND_MAX);
+                    double prob = exp(-(double)lengthDelta/initialTemperature);
+                    if(random < prob){
+                        std::cout << "difference: " << lengthDelta << "\n";
+                        std::reverse(path.begin() + i + 1, path.begin()+j+1);
+                        distance += lengthDelta;
+                        initialTemperature = initialTemperature*cooldownRate; 
+                        totalSteps++;
+                        break;
+                    }
+                    totalSteps++;
+                }
+
+
+            }
+        }
+    }
+    //maybe after all steps, run the 2opt again to ensure the best solution, not sure if needed
+    twoOpt(path, distance);
+    if(distance < globalBestDistance){
+        globalBestDistance = distance;
+        globalBestPath = path;
+    }
+    
+    return globalBestDistance;
+
+}
+
+void Graph::initDistanceGraph() {
+    matrixGraph = new double*[vertexSet.size()];
+    for(int i = 0; i < vertexSet.size(); i++){
+        matrixGraph[i] = new double[vertexSet.size()];
+        for(int j = 0; j < vertexSet.size(); j++){
+            if(i == j){
+                matrixGraph[i][j] = std::numeric_limits<double>::max();
+            }
+            matrixGraph[i][j] = 0;
+        }
+    } 
+    for(auto vertex : vertexSet){
+        for(auto edge : vertex.second->getEdges()){
+            matrixGraph[vertex.second->getId()][edge->getDest()->getId()] = edge->getWeight();
+        }
+    }
+}
