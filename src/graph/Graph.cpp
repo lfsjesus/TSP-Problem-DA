@@ -317,10 +317,12 @@ double Graph::simulatedAnnealing2Opt(double initialTemperature, int steps, doubl
     int totalSteps = 0;
 
     //a step is a change in distance either a better one or a worse one
+    bool foundSolution = true;
     while (totalSteps < steps)
     {
         for(int i = 0; i < vertexSet.size() - 2; i++){
-            for(int j = i+1; j < vertexSet.size() - 1; j++){
+            for(int j = 0; j < vertexSet.size() - 1; j++){
+                if(i == j) continue;
 
                 if(matrixGraph[path[i]->getId()][path[i+1]->getId()] == 0 
                     || matrixGraph[path[j]->getId()][path[j+1]->getId()]==0
@@ -338,16 +340,18 @@ double Graph::simulatedAnnealing2Opt(double initialTemperature, int steps, doubl
                     std::reverse(path.begin() + i + 1, path.begin()+j+1);
                     distance += lengthDelta;
                     //decrease current temperature
-                    if(distance < globalBestDistance){
+                    if(distance <= globalBestDistance){
                         globalBestDistance = distance;
                         globalBestPath = path;
                         totalSteps = 0;
+                        foundSolution = true;
                     }
                     break;
                 } else {
                     //make probability for worse path
                     //if accepted, use worse path increment totalSteps and decrease current temperature
-                    if(lengthDelta == 0) continue;
+                    totalSteps++;
+                    if(lengthDelta == 0 || !foundSolution) continue;
                     double random = ((double) rand() / RAND_MAX);
                     double prob = exp(-(double)lengthDelta/initialTemperature);
                     if(random < prob){
@@ -356,9 +360,9 @@ double Graph::simulatedAnnealing2Opt(double initialTemperature, int steps, doubl
                         distance += lengthDelta;
                         initialTemperature = initialTemperature*cooldownRate; 
                         totalSteps++;
+                        foundSolution = false;
                         break;
                     }
-                    totalSteps++;
                 }
 
 

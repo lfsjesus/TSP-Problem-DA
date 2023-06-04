@@ -37,10 +37,10 @@ int Menu::mainMenu() {
     std::cout << "----------------------------------------------------------------" << std::endl;
     std::cout << "Choose an option: ";
 
-    // Graph * graph = loadSampleGraph("../dataset/Toy-Graphs/stadiums.csv");
+    Graph * graph = loadSampleGraph("../dataset/Extra_Fully_Connected_Graphs/edges_400.csv", false);
 
-    Graph *graph = loadRealWorldGraph("../dataset/Real-world Graphs/graph1/nodes.csv",
-                                      "../dataset/Real-world Graphs/graph1/edges.csv");
+    // Graph *graph = loadRealWorldGraph("../dataset/Real-world Graphs/graph1/nodes.csv",
+    //                                   "../dataset/Real-world Graphs/graph1/edges.csv");
 
     /*
     std::vector<int> path = {0};
@@ -63,7 +63,7 @@ int Menu::mainMenu() {
     std::cout << "\n2-approximation distance: " << std::fixed << result << "\n";
     double twoOpt = graph->triangularInequalityHeuristic2Opt();
     std::cout << "\n2-approximation distance with 2-opt: " << std::fixed << twoOpt << "\n";
-    double simulatedAnnealing = graph->simulatedAnnealing2Opt(5000,100*graph->getNumVertex(), 0.95);
+    double simulatedAnnealing = graph->simulatedAnnealing2Opt(5000,graph->getNumVertex()*graph->getNumVertex(), 0.95);
     std::cout << "\n2-approximation distance with simulation annealing 2-opt: " << std::fixed << simulatedAnnealing << "\n";
 
 
