@@ -125,14 +125,45 @@ public:
      */
     void preOrderTraversal(const std::vector<Edge*>& mst, Vertex* v, std::vector<Vertex*> &path);
 
+    /**
+     * @brief Uses the tringualar inequality path result and runs 2-opt (switches all 2 pairs of vertices) to find a better result
+     * Complexity(|E|log|V| + |V|^3) being |E| the number of edges and |V| the number of vertices
+     * 
+     * @return double 
+     */
     double triangularInequalityHeuristic2Opt();
 
+    /**
+     * @brief runs 2-opt algorigthm until no improvements found
+     * Complexity(|V|^3) being |V| the number of vertices
+     * @param path vector that contains an hamiltonian cycle
+     * @param distance sum of path distance
+     */
     void twoOpt(std::vector<Vertex*>& path, double& distance);
 
+    /**
+     * @brief Uses a base hamiltonian cycle (by linking nodes by ascending id order) and runs 2opt on it
+     * Complexity(|V|^3) being |V| the number of vertices
+     * 
+     * @return double sum of path distance
+     */
     double localSearch2Opt();
 
+    /**
+     * @brief Uses the triangular inequality algorithm as a base an runs simulatedAnnealing with 2opt switching
+     * Complexity(|E|log|V| + |V|^3) being |E| the number of edges and |V| the number of vertices
+     * 
+     * @param initialTemperature higher makes the algorithm more likely to accept wrong edges througout the algorithm
+     * @param steps max number of steps of no-improvement
+     * @param cooldownRate multiplier for the temperature MUST be between 0-1
+     * @return double sum of least distant path
+     */
     double simulatedAnnealing2Opt(double initialTemperature, int steps, double cooldownRate);
 
+    /**
+     * @brief Inits the distance matrix according to vertexSet
+     * 
+     */
     void initDistanceGraph();
 };
 
