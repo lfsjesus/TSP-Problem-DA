@@ -3,7 +3,7 @@
 #include <fstream>
 #include <sstream>
 
-Graph* loadSampleGraph(const std::string& filePath) {
+Graph* loadSampleGraph(const std::string& filePath, bool skipFirstLine) {
     std::ifstream file(filePath);
 
     if (!file.good()) {
@@ -14,7 +14,10 @@ Graph* loadSampleGraph(const std::string& filePath) {
     auto *graph = new Graph();
 
     std::string line;
-    std::getline(file, line);
+
+    if (skipFirstLine) {
+        std::getline(file, line);
+    }
 
     while (std::getline(file, line).good()) {
         if (line.back() == '\r') line.pop_back();

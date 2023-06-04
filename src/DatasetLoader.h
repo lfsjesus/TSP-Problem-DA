@@ -7,9 +7,10 @@
 /**
  * @brief Loads a sample graph (Toy Graph or Extra Fully Connected Graph) from a file
  * @param filePath Path to file
+ * @param skipFirstLine Whether to skip the first line of the file
  * @return Pointer to graph or nullptr if file not found
  */
-Graph *loadSampleGraph(const std::string& filePath);
+Graph *loadSampleGraph(const std::string& filePath, bool skipFirstLine);
 
 /**
  * @brief Loads a real world graph (larger files) from a file
