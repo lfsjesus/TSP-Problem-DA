@@ -1,5 +1,7 @@
 #include "Menu.h"
 #include <cstdlib>
+#include <chrono>
+#include <algorithm>
 
 bool stayInMenu;
 
@@ -55,18 +57,7 @@ int Menu::mainMenu() {
         std::cout << v << " ";
     }
      */
-    graph->initDistanceGraph();
-    std::cout << graph->getVertexSet().size() << std::endl;
-    double localSearch2Opt = graph->localSearch2Opt();
-    std::cout << "\nLocal Search 2Opt: " << std::fixed << localSearch2Opt << "\n";
-    double result = graph->triangularInequalityHeuristic();
-    std::cout << "\n2-approximation distance: " << std::fixed << result << "\n";
-    double twoOpt = graph->triangularInequalityHeuristic2Opt();
-    std::cout << "\n2-approximation distance with 2-opt: " << std::fixed << twoOpt << "\n";
-    double simulatedAnnealing = graph->simulatedAnnealing2Opt(5000,graph->getNumVertex()*graph->getNumVertex(), 0.95);
-    std::cout << "\n2-approximation distance with simulation annealing 2-opt: " << std::fixed << simulatedAnnealing << "\n";
-
-
+    otherHeuristicsMenu(graph);
 
     return auxMenu(5, 0);
 }
@@ -114,4 +105,138 @@ void Menu::menuController() {
     }while (op != 0);
     std::cout << "\n";
     std::cout << "Thank you for using our platform!" << std::endl;
+}
+
+
+void Menu::simulatedAnnealingMenu(Graph * graph){
+    clearScreen();
+    std::cout << "\tChoose an option...\n\n";
+    std::cout << "1. Default options\n";
+    std::cout << "2. Custom options\n";
+    std::cout << "Enter your selection: ";
+    int selection;
+    if(!(std::cin >> selection).good()){
+        simulatedAnnealingMenu(graph);
+    }
+    int initialTemperature;
+    int numberOfSteps;
+    double cooldownRatio;
+    if(selection == 1){
+        initialTemperature = 5000;
+        numberOfSteps = 5*graph->getNumVertex()*graph->getNumVertex();
+        cooldownRatio = 0.95;
+
+    } else if(selection == 2){
+        std::cout << "\nEnter initial temperature: ";
+        std::cin >> initialTemperature;
+        std::cout << "\nEnter max number of steps without improvement: ";
+        std::cin >> numberOfSteps;
+        std::cout << "\nEnter cooldown ratio (0-1 double): ";
+        std::cin >> cooldownRatio;
+    } else {
+        simulatedAnnealingMenu(graph);
+    }
+
+    if(cooldownRatio < 0 || cooldownRatio > 1){
+        simulatedAnnealingMenu(graph);
+        return;
+    }
+    auto start = std::chrono::high_resolution_clock::now();
+    double distance = graph->simulatedAnnealing2Opt(initialTemperature, numberOfSteps, cooldownRatio);
+    auto end = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end-start);
+    
+    std::cout << "\n\n\t\t Simulated annealing\n\n";
+    std::cout << "Distance: " << std::fixed << distance << "\n";
+    std::cout << "Run time: " << std::fixed << (double) duration.count() / 1000 << "\n";
+    std::cout << "\nPress enter to continue...\n";
+
+    std::cin.clear();
+    std::cin.sync();
+    std::cin.get();
+    getchar();
+    otherHeuristicsMenu(graph);
+
+}
+
+void Menu::otherHeuristicsMenu(Graph * graph) {
+    if(!graph->isDistanceGraphInitialized()){
+        graph->initDistanceGraph();
+    }
+    clearScreen();
+        std::cout << "\n\t\tOther Heuristics\n\n";
+    std::cout << "1. Local search 2-opt only" << std::endl
+              << "2. Triangular Approximation Heuristic with 2-opt optimization" << std::endl
+              << "3. Simulated Annealing using 2-opt" << std::endl
+              << "4. Do All and choose minimum" << std::endl
+              << "0. Go back" << std::endl;
+    std::cout << "----------------------------------------------------------------" << std::endl;
+    std::cout << "Choose an option: ";
+    int selection;
+    if((std::cin >> selection).fail()){
+        otherHeuristicsMenu(graph);
+    }
+    if(selection == 1){
+        auto start = std::chrono::high_resolution_clock::now();
+        double distance = graph->localSearch2Opt();
+        auto end = std::chrono::high_resolution_clock::now();
+        auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end-start);
+        
+        clearScreen();
+        std::cout << "\n\t\t Local search 2-opt only\n\n";
+        std::cout << "Distance: " << std::fixed << distance << "\n";
+        std::cout << "Run time: " << std::fixed << (double) duration.count() / 1000 << "\n";
+        std::cout << "\n Press enter to continue...\n";
+        std::cin.clear();
+        std::cin.sync();
+        std::cin.get();
+        getchar();
+
+
+    }
+    if(selection == 2){
+        auto start = std::chrono::high_resolution_clock::now();
+        double distance = graph->triangularInequalityHeuristic2Opt();
+        auto end = std::chrono::high_resolution_clock::now();
+        auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end-start);
+        
+        clearScreen();
+        std::cout << "\n\t\t Triangular approximation heuristic with 2-opt optimization\n\n";
+        std::cout << "Distance: " << std::fixed << distance << "\n";
+        std::cout << "Run time: " << std::fixed << (double) duration.count() / 1000<< "\n";
+        std::cout << "\n Press enter to continue...\n";
+        std::cin.clear();
+        std::cin.sync();
+        std::cin.get();
+        getchar();
+
+
+    }
+    if(selection == 3){
+        simulatedAnnealingMenu(graph);
+    }
+    if(selection == 4){
+        std::vector<double> distances;
+        auto start = std::chrono::high_resolution_clock::now(); 
+        distances.push_back(graph->localSearch2Opt());
+        distances.push_back(graph->triangularInequalityHeuristic2Opt());
+        distances.push_back(graph->simulatedAnnealing2Opt(5000, 5*graph->getNumVertex()*graph->getNumVertex(), 0.95));
+        auto end = std::chrono::high_resolution_clock::now();
+        auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end-start);
+        std::cout << "\n\t\t All alternative methods\n\n";
+        std::cout << "Distance: " << std::fixed << *std::min_element(distances.begin(), distances.end()) << "\n";
+        std::cout << "Run time: " << std::fixed << (double) duration.count() / 1000<< "\n";
+        std::cout << "\n Press enter to continue...\n";
+        std::cin.clear();
+        std::cin.sync();
+        std::cin.get();
+        getchar();
+
+
+    }
+    if(selection == 0){
+        return;
+    }
+    otherHeuristicsMenu(graph);
+
 }

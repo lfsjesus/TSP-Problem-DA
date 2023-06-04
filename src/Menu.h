@@ -21,6 +21,10 @@ public:
 
     void menuController();
 
+    void otherHeuristicsMenu(Graph * graph);
+    
+    void simulatedAnnealingMenu(Graph * graph);
+
 
 };
 
