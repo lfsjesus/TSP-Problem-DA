@@ -53,19 +53,6 @@ std::unordered_map<int, Vertex *> Graph::getVertexSet() const {
     return vertexSet;
 }
 
-/*
-void Graph::DFS(Vertex *source, std::vector<Vertex*> &path) {
-    source->setVisited(true);
-
-    for (auto e: source->getEdges()) {
-        if (!e->getDest()->isVisited()) {
-            DFS(e->getDest(), path);
-        }
-    }
-    path.push_back(source);
-}
- */
-
 void Graph::resetVisited() {
     for (auto v: vertexSet) {
         v.second->setVisited(false);

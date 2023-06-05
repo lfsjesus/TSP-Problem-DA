@@ -1,5 +1,5 @@
-#ifndef DA_RAILWAYMANAGEMENT_GRAPH_H
-#define DA_RAILWAYMANAGEMENT_GRAPH_H
+#ifndef DA_TSP_GRAPH_H
+#define DA_TSP_GRAPH_H
 
 #include <vector>
 #include <unordered_map>
@@ -113,6 +113,7 @@ public:
 
     /**
      * @brief Solves the Travelling Salesman Problem using the Triangular Inequality Heuristic, ensuring a 2-approximation
+     * Complexity: O(|E|log|V| + |V|^3) being |E| the number of edges and |V| the number of vertices in the graph
      * @return distance of the tour/path
      */
     double triangularInequalityHeuristic();
@@ -176,4 +177,4 @@ public:
     inline bool isDistanceGraphInitialized(){return matrixGraphInitialized;};
 };
 
-#endif //DA_RAILWAYMANAGEMENT_GRAPH_H
+#endif //DA_TSP_GRAPH_H
