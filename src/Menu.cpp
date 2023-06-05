@@ -118,10 +118,9 @@ void Menu::menuController() {
                     graph->resetVisited();
 
                     std::vector<int> path, bestPath;
-                    double minCost;
+                    double minCost = std::numeric_limits<double>::max();
                     double cumulatedCost = 0.0;
                     path.push_back(0);
-                    path.push_back(graph->getNumVertex()-2);
 
                     auto start = std::chrono::high_resolution_clock::now();
                     graph->tsp_backtracking(path, bestPath, minCost, cumulatedCost);
@@ -139,6 +138,8 @@ void Menu::menuController() {
                             std::cout << " -> ";
                         }
                     }
+
+                    std::cout << std::endl << "Total cost: " << minCost << std::endl;
                     break;
                 }
 
