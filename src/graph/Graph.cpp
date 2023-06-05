@@ -342,7 +342,7 @@ double Graph::simulatedAnnealing2Opt(double initialTemperature, int steps, doubl
                     double random = ((double) rand() / RAND_MAX);
                     double prob = exp(-(double)lengthDelta/initialTemperature);
                     if(random < prob){
-                        std::cout << "difference: " << lengthDelta << "\n";
+                        //std::cout << "difference: " << lengthDelta << "\n";
                         std::reverse(path.begin() + i + 1, path.begin()+j+1);
                         distance += lengthDelta;
                         initialTemperature = initialTemperature*cooldownRate; 
