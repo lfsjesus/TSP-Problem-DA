@@ -138,6 +138,7 @@ void Menu::menuController() {
                             std::cout << " -> ";
                         }
                     }
+                    std::cout << " -> " << bestPath[0] << std::endl;
 
                     std::cout << std::endl << "Total cost: " << minCost << std::endl;
                     break;
