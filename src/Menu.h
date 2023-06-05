@@ -19,9 +19,9 @@ public:
 
     int aboutUsMenu();
 
+    void getGraphsInDataset(const std::string& folderPath, std::vector<std::string>& fileList);
+
     void menuController();
-
-
 };
 
 #endif //UNTITLED_MENU_H

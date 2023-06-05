@@ -1,7 +1,12 @@
 #include "Menu.h"
 #include <cstdlib>
-
+#include <iostream>
+#include <filesystem>
 bool stayInMenu;
+//std::string folderPath = "../dataset";
+//int fileCount = 0;
+//std::vector<std::string> fileList;
+Graph * graph = loadSampleGraph("../dataset/Toy-Graphs/tourism.csv", true);
 
 int Menu::auxMenu(int maxOption, int minOption) {
     int op;
@@ -36,38 +41,13 @@ int Menu::mainMenu() {
               << "\t0. Quit" << std::endl;
     std::cout << "----------------------------------------------------------------" << std::endl;
     std::cout << "Choose an option: ";
-
-    Graph * graph = loadSampleGraph("../dataset/Extra_Fully_Connected_Graphs/edges_400.csv", false);
-
-    // Graph *graph = loadRealWorldGraph("../dataset/Real-world Graphs/graph1/nodes.csv",
-    //                                   "../dataset/Real-world Graphs/graph1/edges.csv");
-
     /*
-    std::vector<int> path = {0};
-    std::vector<int> bestPath;
-    double minCost = std::numeric_limits<double>::max();
-    graph->resetVisited();
-    Vertex *source = graph->findVertex(0);
-    source->setVisited(true);
-    graph->tsp_backtracking(path, bestPath, minCost, 0.0);
-    std::cout << "Minimum cost: " << minCost << std::endl;
-    for (auto v: bestPath) {
-        std::cout << v << " ";
+    getGraphsInDataset(folderPath, fileList);
+    for (const auto& file : fileList) {
+        std::cout << fileCount << ". " << file << std::endl;
+        fileCount++;
     }
-     */
-    graph->initDistanceGraph();
-    std::cout << graph->getVertexSet().size() << std::endl;
-    double localSearch2Opt = graph->localSearch2Opt();
-    std::cout << "\nLocal Search 2Opt: " << std::fixed << localSearch2Opt << "\n";
-    double result = graph->triangularInequalityHeuristic();
-    std::cout << "\n2-approximation distance: " << std::fixed << result << "\n";
-    double twoOpt = graph->triangularInequalityHeuristic2Opt();
-    std::cout << "\n2-approximation distance with 2-opt: " << std::fixed << twoOpt << "\n";
-    double simulatedAnnealing = graph->simulatedAnnealing2Opt(5000,graph->getNumVertex()*graph->getNumVertex(), 0.95);
-    std::cout << "\n2-approximation distance with simulation annealing 2-opt: " << std::fixed << simulatedAnnealing << "\n";
-
-
-
+    */
     return auxMenu(5, 0);
 }
 
@@ -90,6 +70,32 @@ int Menu::aboutUsMenu() {
     return auxMenu(0, 0);
 }
 
+void Menu::getGraphsInDataset(const std::string& folderPath, std::vector<std::string>& fileList) {
+    std::filesystem::path path(folderPath);
+
+    if (!std::filesystem::exists(path) || !std::filesystem::is_directory(path)) {
+        std::cout << "Invalid folder path: " << folderPath << std::endl;
+        return;
+    }
+
+    for (const auto& entry : std::filesystem::directory_iterator(path)) {
+        if (std::filesystem::is_directory(entry.path())) {
+            std::string folderName = entry.path().filename().string();
+            if (folderName.find("graph") == 0) {
+                fileList.push_back(folderName);
+            } else {
+                getGraphsInDataset(entry.path().string(), fileList);
+            }
+        } else {
+            std::string extension = entry.path().extension().string();
+            if (extension == ".csv") {
+                std::string fileName = entry.path().filename().string();
+                fileList.push_back(fileName);
+            }
+        }
+    }
+}
+
 void Menu::menuController() {
     int op;
     //load dataset
@@ -102,6 +108,39 @@ void Menu::menuController() {
         op = mainMenu();
         do {
             switch (op) {
+
+                case 1:{
+                    temp = 0;
+                    graph->resetVisited();
+
+                    std::vector<int> path, bestPath;
+                    double minCost;
+                    double cumulatedCost = 0.0;
+                    path.push_back(0);
+                    path.push_back(graph->getNumVertex()-2);
+
+                    auto start = std::chrono::high_resolution_clock::now();
+                    graph->tsp_backtracking(path, bestPath, minCost, cumulatedCost);
+                    auto end = std::chrono::high_resolution_clock::now();
+                    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end-start);
+                    std::cout << "Run time: " << std::fixed << (double) duration.count() / 1000 << "\n";
+
+                    if (bestPath.empty()){
+                        std::cout << ("empty");
+                    }
+
+                    for (size_t i = 0; i < bestPath.size(); i++) {
+                        std::cout << bestPath[i];
+                        if (i != bestPath.size() - 1) {
+                            std::cout << " -> ";
+                        }
+                    }
+                    break;
+                }
+
+                case 2:{
+
+                }
 
                 case 5: {
                     temp = aboutUsMenu();
