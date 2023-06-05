@@ -174,7 +174,7 @@ void Menu::menuController() {
                     double minCost = std::numeric_limits<double>::max();
                     double cumulatedCost = 0.0;
                     path.push_back(0);
-
+                    graph->findVertex(0)->setVisited(true);
                     auto start = std::chrono::high_resolution_clock::now();
                     graph->tsp_backtracking(path, bestPath, minCost, cumulatedCost);
                     auto end = std::chrono::high_resolution_clock::now();
