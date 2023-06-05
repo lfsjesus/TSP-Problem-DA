@@ -29,6 +29,7 @@ void Menu::clearScreen() {
 }
 
 int Menu::mainMenu() {
+    clearScreen();
     std::cout << "\nMAIN MENU\n\n";
     std::cout << "\t1. Backtracking Algorithm" << std::endl
               << "\t2. Triangular Approximation Heuristic" << std::endl
@@ -41,7 +42,7 @@ int Menu::mainMenu() {
 }
 
 int Menu::aboutUsMenu() {
-    //clearScreen();
+    clearScreen();
     std::cout
             << "\nHelp platform for the management of shipping and deliveries created in favor of the Design of Algorithms course\n"
             << std::endl;
@@ -87,6 +88,7 @@ void Menu::getGraphsInDataset(const std::string& folderPath, std::vector<std::st
 }
 
 int Menu::chooseTypeGraph(bool isBackTrack){
+    clearScreen();
     std::cout << std::endl << "Which type of graph would you like to use ?\n";
     if (isBackTrack) {
         std::cout << "Warning: Take into consideration that bigger graphs may take up to days to run\n";
@@ -101,6 +103,7 @@ int Menu::chooseTypeGraph(bool isBackTrack){
 }
 
 Graph* Menu::getGraph(const int typeGraph){
+    clearScreen();
     std::vector<std::string> fileList;
     std::string toyGraphs, EFCGraphs, RWGraphs;
     toyGraphs = "../dataset/Toy-Graphs";
@@ -176,6 +179,7 @@ void Menu::menuController() {
                     graph->tsp_backtracking(path, bestPath, minCost, cumulatedCost);
                     auto end = std::chrono::high_resolution_clock::now();
                     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end-start);
+                    clearScreen();
                     std::cout << "\n----------------------------------------------------------------\n";
                     std::cout << "\t\t RESULTS ";
                     std::cout << "\n----------------------------------------------------------------\n" << std::endl;
@@ -208,6 +212,10 @@ void Menu::menuController() {
                     double distance = graph->triangularInequalityHeuristic();
                     auto end = std::chrono::high_resolution_clock::now();
                     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end-start);
+                    clearScreen();
+                    std::cout << "\n----------------------------------------------------------------\n";
+                    std::cout << "\t\t RESULTS ";
+                    std::cout << "\n----------------------------------------------------------------\n" << std::endl;
                     std::cout << std::endl << "The total distance was: " << std::fixed << std::setprecision(1) << distance << "m\n";
                     std::cout << "\nAnd the algorithm ran in: " << std::fixed << std::setprecision(4) << (double) duration.count() / 1000 << "ms\n";
                     std::cout << "\n Press enter to continue...\n";
@@ -242,9 +250,9 @@ void Menu::menuController() {
 
 void Menu::simulatedAnnealingMenu(Graph * graph){
     clearScreen();
-    std::cout << "Choose an option...\n\n";
+    std::cout << "\nChoose an option...\n\n";
     std::cout << "\t1. Default options\n";
-    std::cout << "\t2. Custom options\n";
+    std::cout << "\t2. Custom options\n\n";
     std::cout << "Enter your selection: ";
     int selection;
     if(!(std::cin >> selection).good()){
@@ -277,8 +285,13 @@ void Menu::simulatedAnnealingMenu(Graph * graph){
     double distance = graph->simulatedAnnealing2Opt(initialTemperature, numberOfSteps, cooldownRatio);
     auto end = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end-start);
+
+    clearScreen();
+    std::cout << "\n----------------------------------------------------------------\n";
+    std::cout << "\t\t RESULTS ";
+    std::cout << "\n----------------------------------------------------------------\n" << std::endl;
     
-    std::cout << "\n\n\t\t Simulated annealing\n\n";
+    std::cout << "\t\t Simulated annealing\n\n";
     std::cout << "Distance: " << std::fixed << std::setprecision(4) << distance << "m\n";
     std::cout << "Run time: " << std::fixed << std::setprecision(4) << (double) duration.count() / 1000 << "ms\n";
     std::cout << "\nPress enter to continue...\n";
@@ -315,7 +328,10 @@ void Menu::otherHeuristicsMenu(Graph * graph) {
         auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end-start);
         
         clearScreen();
-        std::cout << "\n\t\t Local search 2-opt only\n\n";
+        std::cout << "\n----------------------------------------------------------------\n";
+        std::cout << "\t\t RESULTS ";
+        std::cout << "\n----------------------------------------------------------------\n" << std::endl;
+        std::cout << "\t\t Local search 2-opt only\n\n";
         std::cout << "Distance: " << std::fixed << std::setprecision(4) << distance << "m\n";
         std::cout << "Run time: " << std::fixed << std::setprecision(4) << (double) duration.count() / 1000 << "ms\n";
         std::cout << "\n Press enter to continue...\n";
@@ -333,7 +349,10 @@ void Menu::otherHeuristicsMenu(Graph * graph) {
         auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end-start);
         
         clearScreen();
-        std::cout << "\n\t\t Triangular approximation heuristic with 2-opt optimization\n\n";
+        std::cout << "\n----------------------------------------------------------------\n";
+        std::cout << "\t\t RESULTS ";
+        std::cout << "\n----------------------------------------------------------------\n" << std::endl;
+        std::cout << "\t\t Triangular approximation heuristic with 2-opt optimization\n\n";
         std::cout << "Distance: " << std::fixed << std::setprecision(4) << distance << "m\n";
         std::cout << "Run time: " << std::fixed << std::setprecision(4) << (double) duration.count() / 1000 << "ms\n";
         std::cout << "\n Press enter to continue...\n";
@@ -355,7 +374,11 @@ void Menu::otherHeuristicsMenu(Graph * graph) {
         distances.push_back(graph->simulatedAnnealing2Opt(5000, 5*graph->getNumVertex()*graph->getNumVertex(), 0.95));
         auto end = std::chrono::high_resolution_clock::now();
         auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end-start);
-        std::cout << "\n\t\t All alternative methods\n\n";
+        clearScreen();
+        std::cout << "\n----------------------------------------------------------------\n";
+        std::cout << "\t\t RESULTS ";
+        std::cout << "\n----------------------------------------------------------------\n" << std::endl;
+        std::cout << "\t\t All alternative methods\n\n";
         std::cout << "Distance: " << std::fixed << std::setprecision(4) << *std::min_element(distances.begin(), distances.end()) << "m\n";
         std::cout << "Run time: " << std::fixed << std::setprecision(4) << (double) duration.count() / 1000 << "ms\n";
         std::cout << "\n Press enter to continue...\n";

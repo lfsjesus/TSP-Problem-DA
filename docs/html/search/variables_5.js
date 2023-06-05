@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['label_199',['label',['../classVertex.html#a92b4c1ace28912f1b9ebb77f1033364e',1,'Vertex']]],
-  ['lat_200',['lat',['../classVertex.html#a8d0fbb051d4ee170ca59c1fb7f2bf248',1,'Vertex']]],
-  ['lon_201',['lon',['../classVertex.html#abbadc3cee69a7dd3200d2f1d0e52f54e',1,'Vertex']]]
+  ['matrixgraph_203',['matrixGraph',['../classGraph.html#afe4d367b75ea64e4716d2ff8600b2696',1,'Graph']]],
+  ['matrixgraphinitialized_204',['matrixGraphInitialized',['../classGraph.html#aa3ebbd378236ab59177070fa83da1d73',1,'Graph']]]
 ];

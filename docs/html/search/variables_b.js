@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['selected_209',['selected',['../classEdge.html#a3af6d278c4ddcb2589e1aa66e52f4efb',1,'Edge']]],
-  ['stayinmenu_210',['stayInMenu',['../Menu_8cpp.html#a6db43a1e8d26c48a043fcbc113dd92e6',1,'Menu.cpp']]]
+  ['vertexset_211',['vertexSet',['../classGraph.html#a421d5057367c2f31e567ec5eeb5e3101',1,'Graph']]],
+  ['visited_212',['visited',['../classVertex.html#aaef9f7de91b4b8f1752d391a1aae9c2e',1,'Vertex']]]
 ];

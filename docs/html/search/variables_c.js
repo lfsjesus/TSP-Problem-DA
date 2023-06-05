@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['vertexset_211',['vertexSet',['../classGraph.html#a421d5057367c2f31e567ec5eeb5e3101',1,'Graph']]],
-  ['visited_212',['visited',['../classVertex.html#aaef9f7de91b4b8f1752d391a1aae9c2e',1,'Vertex']]]
+  ['weight_213',['weight',['../classEdge.html#a6d0148402e635354c03a151c77fcbdd8',1,'Edge']]]
 ];

@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['id_196',['id',['../classVertex.html#a2e69697726190f50c7fc040fb1ddac7a',1,'Vertex']]],
-  ['incoming_197',['incoming',['../classVertex.html#a2d41654d7aee77d99edacca6a923f4ee',1,'Vertex']]],
-  ['indegree_198',['inDegree',['../classVertex.html#a54116e0e5fa4cbf15fa50a7a31771da3',1,'Vertex']]]
+  ['label_200',['label',['../classVertex.html#a92b4c1ace28912f1b9ebb77f1033364e',1,'Vertex']]],
+  ['lat_201',['lat',['../classVertex.html#a8d0fbb051d4ee170ca59c1fb7f2bf248',1,'Vertex']]],
+  ['lon_202',['lon',['../classVertex.html#abbadc3cee69a7dd3200d2f1d0e52f54e',1,'Vertex']]]
 ];
