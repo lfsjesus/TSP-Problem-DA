@@ -1,13 +1,10 @@
 #include "Menu.h"
 #include <cstdlib>
-<<<<<<< HEAD
-#include <iostream>
-#include <filesystem>
-=======
 #include <chrono>
 #include <algorithm>
+#include <iostream>
+#include <filesystem>
 
->>>>>>> 04c58c0bce5b0ed77de6f9235f35670e9c2db210
 bool stayInMenu;
 //std::string folderPath = "../dataset";
 //int fileCount = 0;
@@ -53,13 +50,8 @@ int Menu::mainMenu() {
         std::cout << fileCount << ". " << file << std::endl;
         fileCount++;
     }
-<<<<<<< HEAD
     */
-=======
-     */
-    otherHeuristicsMenu(graph);
-
->>>>>>> 04c58c0bce5b0ed77de6f9235f35670e9c2db210
+    //otherHeuristicsMenu(graph);
     return auxMenu(5, 0);
 }
 
