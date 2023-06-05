@@ -5,12 +5,6 @@
 #include <iostream>
 #include <filesystem>
 
-bool stayInMenu;
-//std::string folderPath = "../dataset";
-//int fileCount = 0;
-//std::vector<std::string> fileList;
-Graph * graph = loadSampleGraph("../dataset/Toy-Graphs/tourism.csv", true);
-
 int Menu::auxMenu(int maxOption, int minOption) {
     int op;
     while (true) {
@@ -39,20 +33,11 @@ int Menu::mainMenu() {
     std::cout << "\t1. Backtracking Algorithm" << std::endl
               << "\t2. Triangular Approximation Heuristic" << std::endl
               << "\t3. Other Heuristics" << std::endl
-              << "\t4. Change Dataset" << std::endl
-              << "\t5. About Us" << std::endl << std::endl
+              << "\t4. About Us" << std::endl << std::endl
               << "\t0. Quit" << std::endl;
     std::cout << "----------------------------------------------------------------" << std::endl;
     std::cout << "Choose an option: ";
-    /*
-    getGraphsInDataset(folderPath, fileList);
-    for (const auto& file : fileList) {
-        std::cout << fileCount << ". " << file << std::endl;
-        fileCount++;
-    }
-    */
-    //otherHeuristicsMenu(graph);
-    return auxMenu(5, 0);
+    return auxMenu(4, 0);
 }
 
 int Menu::aboutUsMenu() {
@@ -75,6 +60,7 @@ int Menu::aboutUsMenu() {
 }
 
 void Menu::getGraphsInDataset(const std::string& folderPath, std::vector<std::string>& fileList) {
+    fileList.clear();
     std::filesystem::path path(folderPath);
 
     if (!std::filesystem::exists(path) || !std::filesystem::is_directory(path)) {
@@ -100,6 +86,68 @@ void Menu::getGraphsInDataset(const std::string& folderPath, std::vector<std::st
     }
 }
 
+int Menu::chooseTypeGraph(bool isBackTrack){
+    std::cout << std::endl << "Which type of graph would you like to use ?\n";
+    if (isBackTrack) {
+        std::cout << "Warning: Take into consideration that bigger graphs may take up to days to run\n";
+    }
+    std::cout << "----------------------------------------------------------------\n" << std::endl;
+    std::cout << "\t1. Toy Graph\n";
+    std::cout << "\t2. Extra Fully Connected Graph\n";
+    std::cout << "\t3. Real World Graph\n";
+    std::cout << "\nChoose an option: ";
+    return auxMenu(3, 1);
+
+}
+
+Graph* Menu::getGraph(const int typeGraph){
+    std::vector<std::string> fileList;
+    std::string toyGraphs, EFCGraphs, RWGraphs;
+    toyGraphs = "../dataset/Toy-Graphs";
+    EFCGraphs = "../dataset/Extra_Fully_Connected_Graphs";
+    RWGraphs = "../dataset/Real-world Graphs";
+    int fileCount = 0;
+    std::cout << std::endl << "Now choose the exact graph you want to use.\n";
+    std::cout << "----------------------------------------------------------------\n" << std::endl;
+    if (typeGraph == 1){
+        getGraphsInDataset(toyGraphs, fileList);
+        for (const auto& file : fileList) {
+            std::cout << "\t" << fileCount << ". " << file << std::endl;
+            fileCount++;
+        }
+        std::cout << "\nChoose an option: ";
+        int choice = auxMenu(fileCount,0);
+        std::string path = toyGraphs + "/" + fileList[choice];
+        return loadSampleGraph(path, true);
+
+    }
+    else if (typeGraph == 2){
+        getGraphsInDataset(EFCGraphs, fileList);
+        for (const auto& file : fileList) {
+            std::cout << "\t" << fileCount << ". " << file << std::endl;
+            fileCount++;
+        }
+        std::cout << "\nChoose an option: ";
+        int choice = auxMenu(fileCount,0);
+        std::string path = EFCGraphs + "/" + fileList[choice];
+        return loadSampleGraph(path, false);
+    }
+    else if (typeGraph == 3){
+        getGraphsInDataset(RWGraphs, fileList);
+        for (const auto& file : fileList) {
+            std::cout << "\t" << fileCount << ". " << file << std::endl;
+            fileCount++;
+        }
+        std::cout << "\nChoose an option: ";
+        int choice = auxMenu(fileCount,0);
+        std::string pathNodes = RWGraphs + "/" + fileList[choice] + "/nodes.csv";
+        std::string pathEdges = RWGraphs + "/" + fileList[choice] + "/edges.csv";
+        return loadRealWorldGraph(pathNodes, pathEdges);
+    }
+
+    return nullptr;
+}
+
 void Menu::menuController() {
     int op;
     //load dataset
@@ -114,6 +162,8 @@ void Menu::menuController() {
             switch (op) {
 
                 case 1:{
+                    int typeGraph = chooseTypeGraph(true);
+                    Graph* graph = getGraph(typeGraph);
                     temp = 0;
                     graph->resetVisited();
 
@@ -126,11 +176,10 @@ void Menu::menuController() {
                     graph->tsp_backtracking(path, bestPath, minCost, cumulatedCost);
                     auto end = std::chrono::high_resolution_clock::now();
                     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end-start);
-                    std::cout << "Run time: " << std::fixed << (double) duration.count() / 1000 << "\n";
-
-                    if (bestPath.empty()){
-                        std::cout << ("empty");
-                    }
+                    std::cout << "\n----------------------------------------------------------------\n";
+                    std::cout << "\t\t RESULTS ";
+                    std::cout << "\n----------------------------------------------------------------\n" << std::endl;
+                    std::cout << std::endl << "For the graph in question the best path was:\n";
 
                     for (size_t i = 0; i < bestPath.size(); i++) {
                         std::cout << bestPath[i];
@@ -140,15 +189,44 @@ void Menu::menuController() {
                     }
                     std::cout << " -> " << bestPath[0] << std::endl;
 
-                    std::cout << std::endl << "Total cost: " << minCost << std::endl;
+                    std::cout << std::endl << "The total distance was: " << std::fixed << std::setprecision(1) << minCost << "m\n";
+                    std::cout << "\nAnd the algorithm ran in: " << std::fixed << std::setprecision(4) << (double) duration.count() / 1000 << "ms\n";
+                    std::cout << "\n Press enter to continue...\n";
+                    std::cin.clear();
+                    std::cin.sync();
+                    std::cin.get();
+                    getchar();
                     break;
                 }
 
                 case 2:{
-
+                    int typeGraph = chooseTypeGraph(false);
+                    Graph* graph = getGraph(typeGraph);
+                    temp = 0;
+                    graph->resetVisited();
+                    auto start = std::chrono::high_resolution_clock::now();
+                    double distance = graph->triangularInequalityHeuristic();
+                    auto end = std::chrono::high_resolution_clock::now();
+                    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end-start);
+                    std::cout << std::endl << "The total distance was: " << std::fixed << std::setprecision(1) << distance << "m\n";
+                    std::cout << "\nAnd the algorithm ran in: " << std::fixed << std::setprecision(4) << (double) duration.count() / 1000 << "ms\n";
+                    std::cout << "\n Press enter to continue...\n";
+                    std::cin.clear();
+                    std::cin.sync();
+                    std::cin.get();
+                    getchar();
+                    break;
                 }
 
-                case 5: {
+                case 3:{
+                    int typeGraph = chooseTypeGraph(false);
+                    Graph* graph = getGraph(typeGraph);
+                    temp = 0;
+                    otherHeuristicsMenu(graph);
+                    break;
+                }
+
+                case 4: {
                     temp = aboutUsMenu();
                     break;
                 }
@@ -164,9 +242,9 @@ void Menu::menuController() {
 
 void Menu::simulatedAnnealingMenu(Graph * graph){
     clearScreen();
-    std::cout << "\tChoose an option...\n\n";
-    std::cout << "1. Default options\n";
-    std::cout << "2. Custom options\n";
+    std::cout << "Choose an option...\n\n";
+    std::cout << "\t1. Default options\n";
+    std::cout << "\t2. Custom options\n";
     std::cout << "Enter your selection: ";
     int selection;
     if(!(std::cin >> selection).good()){
@@ -201,8 +279,8 @@ void Menu::simulatedAnnealingMenu(Graph * graph){
     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end-start);
     
     std::cout << "\n\n\t\t Simulated annealing\n\n";
-    std::cout << "Distance: " << std::fixed << distance << "\n";
-    std::cout << "Run time: " << std::fixed << (double) duration.count() / 1000 << "\n";
+    std::cout << "Distance: " << std::fixed << std::setprecision(4) << distance << "m\n";
+    std::cout << "Run time: " << std::fixed << std::setprecision(4) << (double) duration.count() / 1000 << "ms\n";
     std::cout << "\nPress enter to continue...\n";
 
     std::cin.clear();
@@ -238,8 +316,8 @@ void Menu::otherHeuristicsMenu(Graph * graph) {
         
         clearScreen();
         std::cout << "\n\t\t Local search 2-opt only\n\n";
-        std::cout << "Distance: " << std::fixed << distance << "\n";
-        std::cout << "Run time: " << std::fixed << (double) duration.count() / 1000 << "\n";
+        std::cout << "Distance: " << std::fixed << std::setprecision(4) << distance << "m\n";
+        std::cout << "Run time: " << std::fixed << std::setprecision(4) << (double) duration.count() / 1000 << "ms\n";
         std::cout << "\n Press enter to continue...\n";
         std::cin.clear();
         std::cin.sync();
@@ -256,8 +334,8 @@ void Menu::otherHeuristicsMenu(Graph * graph) {
         
         clearScreen();
         std::cout << "\n\t\t Triangular approximation heuristic with 2-opt optimization\n\n";
-        std::cout << "Distance: " << std::fixed << distance << "\n";
-        std::cout << "Run time: " << std::fixed << (double) duration.count() / 1000<< "\n";
+        std::cout << "Distance: " << std::fixed << std::setprecision(4) << distance << "m\n";
+        std::cout << "Run time: " << std::fixed << std::setprecision(4) << (double) duration.count() / 1000 << "ms\n";
         std::cout << "\n Press enter to continue...\n";
         std::cin.clear();
         std::cin.sync();
@@ -278,8 +356,8 @@ void Menu::otherHeuristicsMenu(Graph * graph) {
         auto end = std::chrono::high_resolution_clock::now();
         auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end-start);
         std::cout << "\n\t\t All alternative methods\n\n";
-        std::cout << "Distance: " << std::fixed << *std::min_element(distances.begin(), distances.end()) << "\n";
-        std::cout << "Run time: " << std::fixed << (double) duration.count() / 1000<< "\n";
+        std::cout << "Distance: " << std::fixed << std::setprecision(4) << *std::min_element(distances.begin(), distances.end()) << "m\n";
+        std::cout << "Run time: " << std::fixed << std::setprecision(4) << (double) duration.count() / 1000 << "ms\n";
         std::cout << "\n Press enter to continue...\n";
         std::cin.clear();
         std::cin.sync();
