@@ -22,6 +22,15 @@ public:
     void getGraphsInDataset(const std::string& folderPath, std::vector<std::string>& fileList);
 
     void menuController();
+<<<<<<< HEAD
+=======
+
+    void otherHeuristicsMenu(Graph * graph);
+    
+    void simulatedAnnealingMenu(Graph * graph);
+
+
+>>>>>>> 04c58c0bce5b0ed77de6f9235f35670e9c2db210
 };
 
 #endif //UNTITLED_MENU_H

@@ -396,4 +396,13 @@ void Graph::initDistanceGraph() {
             matrixGraph[vertex.second->getId()][edge->getDest()->getId()] = edge->getWeight();
         }
     }
+    matrixGraphInitialized = true;
+}
+
+void Graph::freeDistanceGraph() {
+    for(int i = 0; i < vertexSet.size(); i++){
+        delete[] matrixGraph[i];
+    }
+    delete[] matrixGraph;
+    matrixGraphInitialized = false;
 }

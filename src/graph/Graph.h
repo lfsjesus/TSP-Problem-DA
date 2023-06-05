@@ -13,6 +13,7 @@ class Graph {
 private:
     std::unordered_map<int, Vertex *> vertexSet;
     double ** matrixGraph;
+    bool matrixGraphInitialized = false;
 public:
     /**
      * @brief Finds a vertex with a given station name
@@ -165,6 +166,14 @@ public:
      * 
      */
     void initDistanceGraph();
+
+    /**
+     * @brief Frees the memory occupied by the distance matrix
+     * 
+     */
+    void freeDistanceGraph();
+
+    inline bool isDistanceGraphInitialized(){return matrixGraphInitialized;};
 };
 
 #endif //DA_RAILWAYMANAGEMENT_GRAPH_H
